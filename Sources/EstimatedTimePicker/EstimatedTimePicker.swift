@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct EstimatedTimePicker: View {
-    @Binding public var estimatedTime: Double?
+    @Binding public var estimatedTime: Double
     
     @State private var hourSelection: Int = 0
     @State private var minuteSelection: Int = 0
@@ -24,7 +24,7 @@ public struct EstimatedTimePicker: View {
         case three_hours = "3 Hr"
     }
     
-    public init(estimatedTime: Binding<Double?>){
+    public init(estimatedTime: Binding<Double>){
         _estimatedTime = estimatedTime
 #if os(iOS)
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(.white.opacity(0.7))
