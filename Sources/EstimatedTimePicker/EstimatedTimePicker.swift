@@ -8,10 +8,10 @@
 import SwiftUI
 
 public struct EstimatedTimePicker: View {
-    @Binding public var estimatedTime: Double
+    @Binding private var estimatedTime: Double
     
-    @State private var hourSelection: Int = 0
-    @State private var minuteSelection: Int = 0
+    @State private var hourSelection: Int
+    @State private var minuteSelection: Int
     @State private var timeSuggets: TimeSuggets?
     
     private enum TimeSuggets: String, CaseIterable {
@@ -24,6 +24,8 @@ public struct EstimatedTimePicker: View {
     
     public init(estimatedTime: Binding<Double>){
         _estimatedTime = estimatedTime
+        hourSelection = Int(estimatedTime.wrappedValue) / 60
+        minuteSelection = Int(estimatedTime.wrappedValue) % 60
 #if os(iOS)
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(.white.opacity(0.7))
         UISegmentedControl.appearance().backgroundColor = UIColor(.black.opacity(0.3))
@@ -37,12 +39,29 @@ public struct EstimatedTimePicker: View {
             pickersView
             timeSuggetsView
         }
+        .onAppear {
+            withAnimation(.spring()) {
+                if estimatedTime == 60 {
+                    self.timeSuggets = .hour
+                } else if estimatedTime == 180 {
+                    self.timeSuggets = .three_hours
+                } else if estimatedTime == 5 {
+                    self.timeSuggets = .five_minute
+                } else if estimatedTime == 15 {
+                    self.timeSuggets = .quarter_hour
+                } else if estimatedTime == 30 {
+                    self.timeSuggets = .half_hour
+                } else {
+                    timeSuggets = nil
+                }
+            }
+        }
     }
 }
 
 struct EstimatedTimePicker_Previews: PreviewProvider {
     static var previews: some View {
-        EstimatedTimePicker(estimatedTime: .constant(300))
+        EstimatedTimePicker(estimatedTime: .constant(5))
     }
 }
 
@@ -154,8 +173,8 @@ extension EstimatedTimePicker {
             .background {
                 GeometryReader { proxy in
                     Rectangle()
-                        .fill(.blue)
-                        .cornerRadius(9)
+                        .fill(.blue.opacity(0.5))
+                        .cornerRadius(8)
                         .frame(width:(timeSuggets == .five_minute ? 1 :
                                         timeSuggets == .quarter_hour ? 2 :
                                         timeSuggets == .half_hour ? 3 :
