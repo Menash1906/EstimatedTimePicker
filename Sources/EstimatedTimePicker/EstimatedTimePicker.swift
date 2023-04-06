@@ -12,8 +12,6 @@ public struct EstimatedTimePicker: View {
     
     @State private var hourSelection: Int = 0
     @State private var minuteSelection: Int = 0
-    
-    @State private var showPickers = true
     @State private var timeSuggets: TimeSuggets?
     
     private enum TimeSuggets: String, CaseIterable {
@@ -35,16 +33,10 @@ public struct EstimatedTimePicker: View {
     }
     
     public var body: some View {
-        DisclosureGroup(isExpanded: $showPickers) {
+        VStack {
             pickersView
             timeSuggetsView
-        } label: {
-            Toggle(isOn: $showPickers) {
-                Label("Estimated Time", systemImage: "clock")
-                    .fontWeight(.bold)
-            }
         }
-        .foregroundColor(.black)
     }
 }
 
